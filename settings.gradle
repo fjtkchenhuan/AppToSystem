@@ -1,2 +1,2 @@
-include ':app', ':gravityrotate', ':callrecorder'
+include ':app', ':gravityrotate', ':callrecorder', ':bodyinduction'
 rootProject.name='AppToSystem'
