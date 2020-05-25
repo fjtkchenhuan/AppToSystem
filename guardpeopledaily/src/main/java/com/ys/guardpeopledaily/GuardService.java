@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class GuardService extends Service {
     private final static int CHECK_APP = 0x01;
     private final static String PEOPLE_APP_PACKAGE_NAME = "com.simpleprezi.smartplayer";
     private final static String PEOPLE_APP_CLASS_NAME = "com.simpleprezi.smartplayer.MainActivity";
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -28,18 +30,22 @@ public class GuardService extends Service {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == CHECK_APP) {
-//                Log.d("sky","GuardService = " + Utils.getValueFromProp("persist.sys.guardApp"));
+                String guardTime = Utils.getValueFromProp("persist.sys.guardTime");
+                if ("".equals(guardTime))
+                    guardTime = "10";
+//                Log.d("sky", "GuardService = " + Utils.getValueFromProp("persist.sys.guardApp") + "time = "
+//                        + guardTime);
                 if (PEOPLE_APP_PACKAGE_NAME.equals(Utils.getValueFromProp("persist.sys.guardApp"))) {
-                    boolean isRunning = isMyAppRunning(GuardService.this,PEOPLE_APP_PACKAGE_NAME);
+                    boolean isRunning = isMyAppRunning(GuardService.this, PEOPLE_APP_PACKAGE_NAME);
                     String topActivity = getTopActivity();
                     if (!isRunning || !PEOPLE_APP_PACKAGE_NAME.equals(topActivity)) {
                         Intent intent = new Intent();
-                        intent.setClassName(PEOPLE_APP_PACKAGE_NAME,PEOPLE_APP_CLASS_NAME);
+                        intent.setClassName(PEOPLE_APP_PACKAGE_NAME, PEOPLE_APP_CLASS_NAME);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 }
-                mHandler.sendEmptyMessageDelayed(CHECK_APP, 1000);
+                mHandler.sendEmptyMessageDelayed(CHECK_APP, (Integer.parseInt(guardTime)) * 1000);
             }
         }
     };
@@ -82,7 +88,7 @@ public class GuardService extends Service {
 
     @Override
     public void onDestroy() {
-        Intent service = new Intent(this,GuardService.class);
+        Intent service = new Intent(this, GuardService.class);
         startService(service);
         super.onDestroy();
     }
