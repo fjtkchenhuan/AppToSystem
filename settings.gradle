@@ -1,2 +1,5 @@
-include ':app', ':gravityrotate', ':callrecorder', ':bodyinduction'
+include ':app', ':gravityrotate', ':callrecorder', ':bodyinduction', ':checknet', ':librarytest'
 rootProject.name='AppToSystem'
+include ':receivebroadcast'
+include ':guardpeopledaily'
+include ':opennet'

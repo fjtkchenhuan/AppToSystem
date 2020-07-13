@@ -33,8 +33,8 @@ public class GuardService extends Service {
                 String guardTime = Utils.getValueFromProp("persist.sys.guardTime");
                 if ("".equals(guardTime))
                     guardTime = "10";
-//                Log.d("sky", "GuardService = " + Utils.getValueFromProp("persist.sys.guardApp") + "time = "
-//                        + guardTime);
+                Log.d("sky", "GuardService = " + Utils.getValueFromProp("persist.sys.guardApp") + "time = "
+                        + guardTime);
                 if (PEOPLE_APP_PACKAGE_NAME.equals(Utils.getValueFromProp("persist.sys.guardApp"))) {
                     boolean isRunning = isMyAppRunning(GuardService.this, PEOPLE_APP_PACKAGE_NAME);
                     String topActivity = getTopActivity();

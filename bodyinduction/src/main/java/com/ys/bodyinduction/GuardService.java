@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -27,17 +28,20 @@ public class GuardService extends Service {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == CHECK_APP) {
-                curValue = GpioUtils.getGpioValue(69);
+                curValue = GpioUtils.getGpioValue(225);
+//                Log.d("sky","curValue =" + curValue);
                 if ("0".equals(lastValue) && "1".equals(curValue)) {
-                   Log.d("sky","有人来了，关背光、关声音，暂停视频");
-                  sendKeyCode2(KeyEvent.KEYCODE_MEDIA_STOP);
-                    GpioUtils.writeNode("/sys/class/backlight/backlight/bl_power","1");
-                    GpioUtils.writeNode("/sys/bus/i2c/devices/2-0010/spkmode","1");
+                    Log.d("sky","插入耳机，弹出音量调节窗");
+                    sendKeyCode2(KeyEvent.KEYCODE_VOLUME_UP);
+//                    sendKeyCode2(KeyEvent.KEYCODE_MEDIA_STOP);
+//                    GpioUtils.writeNode("/sys/class/backlight/backlight/bl_power","1");
+//                    GpioUtils.writeNode("/sys/bus/i2c/devices/2-0010/spkmode","1");
                 } else if ("1".equals(lastValue) && "0".equals(curValue)){
-                    Log.d("sky","人走了，开背光，开声音，播放视频");
-                    sendKeyCode2(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
-                    GpioUtils.writeNode("/sys/class/backlight/backlight/bl_power","0");
-                    GpioUtils.writeNode("/sys/bus/i2c/devices/2-0010/spkmode","1");
+                    SystemClock.sleep(50);
+//                    Log.d("sky","人走了，开背光，开声音，播放视频");
+//                    sendKeyCode2(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+//                    GpioUtils.writeNode("/sys/class/backlight/backlight/bl_power","0");
+//                    GpioUtils.writeNode("/sys/bus/i2c/devices/2-0010/spkmode","1");
                 }
                 lastValue = curValue;
                 mHandler.sendEmptyMessageDelayed(CHECK_APP, 1000);
@@ -49,7 +53,7 @@ public class GuardService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mHandler.sendEmptyMessageDelayed(CHECK_APP, 3000);
+        mHandler.sendEmptyMessageDelayed(CHECK_APP, 1000);
     }
 
     private void sendKeyCode2(final int keyCode) {
